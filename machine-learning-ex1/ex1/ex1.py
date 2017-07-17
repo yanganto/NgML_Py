@@ -26,6 +26,11 @@
 
 
 ## Initialization
+import matplotlib
+import matplotlib.cm as cm
+import matplotlib.mlab as mlab
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
 import numpy as np
 
 from warmUpExercise import warmUpExercise
@@ -90,7 +95,7 @@ theta, J_history = gradientDescent(X, y, theta, alpha, iterations);
 
 # print theta to screen
 print('Theta found by gradient descent:');
-print('#f', theta);
+print(theta);
 print('Expected theta values (approx)');
 print(' -3.6303\n  1.1664\n');
 
@@ -105,37 +110,47 @@ print('For population = 70,000, we predict a profit of %f' % (predict2*10000) )
 
 print('Program paused. Press enter to continue.')
 
-### ============= Part 4: Visualizing J(theta_0, theta_1) =============
-#fprintf('Visualizing J(theta_0, theta_1) ...\n')
-#
-## Grid over which we will calculate J
-#theta0_vals = linspace(-10, 10, 100);
-#theta1_vals = linspace(-1, 4, 100);
-#
-## initialize J_vals to a matrix of 0's
-#J_vals = zeros(length(theta0_vals), length(theta1_vals));
-#
-## Fill out J_vals
-#for i = 1:length(theta0_vals)
-#    for j = 1:length(theta1_vals)
-#	  t = [theta0_vals(i); theta1_vals(j)];
-#	  J_vals(i,j) = computeCost(X, y, t);
-#    end
-#end
-#
-#
-## Because of the way meshgrids work in the surf command, we need to
-## transpose J_vals before calling surf, or else the axes will be flipped
-#J_vals = J_vals';
-## Surface plot
-#figure;
-#surf(theta0_vals, theta1_vals, J_vals)
-#xlabel('\theta_0'); ylabel('\theta_1');
-#
-## Contour plot
-#figure;
-## Plot J_vals as 15 contours spaced logarithmically between 0.01 and 100
-#contour(theta0_vals, theta1_vals, J_vals, logspace(-2, 3, 20))
-#xlabel('\theta_0'); ylabel('\theta_1');
-#hold on;
-#plot(theta(1), theta(2), 'rx', 'MarkerSize', 10, 'LineWidth', 2);
+## ============= Part 4: Visualizing J(theta_0, theta_1) =============
+print('Visualizing J(theta_0, theta_1) ...')
+
+# Grid over which we will calculate J
+theta0_vals = np.linspace(-10, 10, 100)
+theta1_vals = np.linspace(-1, 4, 100)
+
+# initialize J_vals to a matrix of 0's
+J_vals = np.zeros((len(theta0_vals), len(theta1_vals)))
+
+
+# Fill out J_vals
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+data_x, data_y = [], [] 
+for i, i_var in enumerate(theta0_vals):
+    for j, j_var in enumerate(theta1_vals):
+        t = np.array([[i_var],[j_var]])
+        J_vals[i,j] = computeCost(X, y, t)
+        data_x.append(i_var)
+        data_y.append(j_var)
+
+ax.scatter(data_x, data_y, J_vals.flatten(), c='r', marker='o')
+ax.set_xlabel('Theta 0')
+ax.set_ylabel('Theta 1')
+ax.set_zlabel('J')
+plt.show()
+
+
+# Contour plot
+matplotlib.rcParams['xtick.direction'] = 'out'
+matplotlib.rcParams['ytick.direction'] = 'out'
+
+X, Y = np.meshgrid(theta0_vals, theta1_vals)
+
+# Create a simple contour plot with labels using default colors.  The
+# inline argument to clabel will control whether the labels are draw
+# over the line segments of the contour, removing the lines beneath
+# the label
+plt.figure()
+CS = plt.contour(X, Y, np.log(J_vals))
+plt.clabel(CS, inline=1, fontsize=10)
+plt.show()
+
