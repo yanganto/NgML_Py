@@ -42,7 +42,7 @@ data_X = data[:, (0, 1)]; y = data[:, 2];
 
 print('Plotting data with + indicating (y = 1) examples and o indicating (y = 0) examples.')
 
-plotData(data_X, y)
+plotData(data_X, y, legend=('Admitted', 'Not admitted'), xlabel='Exam 1 score', ylabel='Exam 2 score')
 
 print('\nProgram paused. Press enter to continue.\n')
 
@@ -95,10 +95,10 @@ print('\nProgram paused. Press enter to continue.\n')
 # #  This function will return theta and the cost 
 # [theta, cost] = ...
 # 	fminunc(@(t)(costFunction(t, X, y)), initial_theta, options);
-r= optimize.fmin_bfgs(partial(costFunction, cost_only=True), initial_theta, 
+r = optimize.fmin_bfgs(partial(costFunction, cost_only=True), initial_theta, 
         fprime=partial(costFunction, grad_only=True), args=(X, y), maxiter=400,
         full_output = True)
-# # Print theta to screen
+# Print theta to screen
 print('Cost at theta found by fminunc: %f\n' % r[1]);
 print('Expected cost (approx): 0.203\n');
 print('theta: \n');
